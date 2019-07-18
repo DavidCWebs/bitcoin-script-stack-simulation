@@ -17,7 +17,9 @@ def verify_p2pkh():
     locking_script = input("Enter locking script:")
     for word in locking_script.split():
         if word[:2] == "OP":
-            b.interpreter(word)()
+            res = b.interpreter(word)()
+            if res == False:
+                break
         else:
             print("pushing {}".format(word))
             b.push(word)
