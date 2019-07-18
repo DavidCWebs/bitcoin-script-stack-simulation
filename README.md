@@ -52,7 +52,7 @@ The HASH_160 opcode is applied. This pops and hashes the top stack item: `RIPEMD
 - `<signature>`
 
 ### Stack Contents Step 5
-The ``<PubKeyHash>`` from the locking script is pushed onto the stack:
+The `<PubKeyHash>` from the locking script is pushed onto the stack:
 
 - `<PubKeyHash>`
 - `<PubKeyHash>`
@@ -70,3 +70,8 @@ The OP_CHECKSIG opcode is applied. The top two elements in the stack are popped 
 
 If the process finishes and the stack has the single element `TRUE`, the transaction is valid.
 
+References
+----------
+* [bitcoin.org Developer Docs, Transactions][1]
+
+[1]: https://bitcoin.org/en/transactions-guide

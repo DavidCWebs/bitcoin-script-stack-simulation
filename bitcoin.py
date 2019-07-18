@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import base58
 from hashlib import sha256
+from utilities.hash160 import hash160_hexstring
 
 class Stack:
     def __init__(self):
@@ -21,58 +22,55 @@ class Stack:
             return False
         return True
 
+    def print_stack(self):
+        print("---")
+        for el in self.stack:
+            print(el)
+        print("---\n")
+
 class Bitcoin(Stack):
-    def __init__(self):
+    def __init__(self, display=False):
         Stack.__init__(self)
+        self.display=display
 
     def check_sig(sig, pubkey):
         return False
 
-    def dup(self):
+    def op_dup(self):
         a = self.stack.pop()
         self.push(a)
         self.push(a)
+        if self.display: self.print_stack()
 
-    def hash(self):
-        v = self.pop().encode('utf-8')
-        self.push(sha256(v).digest().hex())
+    def op_hash160(self):
+        v = self.pop()
+        self.push(hash160_hexstring(v).hex())
+        if self.display: self.print_stack()
 
-    def equal_verify(self):
+    def op_equalverify(self):
         a = self.pop()
         b = self.pop()
         if a == b:
-            self.push(1)
+            return True
         else:
-            self.push(0)
+            return False
+        if self.display: self.print_stack()
 
-    def checksig(self):
+    def op_checksig(self):
         a = self.pop()
         b = self.pop()
         if self.is_empty():
             print("Empty stack.")
         else:
             print("Not empty!")
+        if self.display: self.print_stack()
 
-def main():
-    """
-    Unlocking P2PKH script
-    """
-    b = Bitcoin()
-    sig = input("Input sig: ")
-    pubkey = input("Input pubkey: ")
-    b.push(sig)
-    b.push(pubkey)
-    b.dup()                             # OP_DUP
-    b.hash()                            # HASH_160
-    pubkeyhash = input("Input PubKHash:")
-    b.push(pubkeyhash)
-    b.equal_verify()                    # EQUALVERIFY
-    if (b.pop()):
-        print("hashes verified")
-        b.checksig()                    # CHECKSIG
-    else:
-        print("not verified.")
-#    print(b.pop().digest().hex())
-
-if __name__ == '__main__':
-    main()
+    def interpreter(self, func):
+        '''Returns a bound method based on the received opcode'''
+        switcher = {
+                "OP_DUP": self.op_dup,
+                "OP_HASH160": self.op_hash160,
+                "OP_EQUALVERIFY": self.op_equalverify,
+                "OP_CHECKSIG": self.op_checksig
+                }
+        return switcher.get(func, lambda: "Invalid opcode")
