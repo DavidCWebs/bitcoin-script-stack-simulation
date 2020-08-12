@@ -15,5 +15,8 @@ def hash160_hexstring(hexstring):
     return (hash160(binascii.unhexlify(hexstring)))
 
 if __name__ == '__main__':
-    print(hash160_string(sys.argv[1]).hex())
-    print(hash160_hexstring(sys.argv[1]).hex())
+    if len(sys.argv) < 2:
+        hexstring = input("Enter the hexstring to hash: ")
+    else:
+        hexstring = sys.argv[1]
+    print(hash160_hexstring(hexstring).hex())

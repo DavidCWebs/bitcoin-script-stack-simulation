@@ -24,7 +24,7 @@ To solve this, the spender (i.e. the owner of the hashed public key) needs to pr
 
 The data is provided to the verification script in this order:
 ```
-`<signature>` `<PubK>` OP_DUP OP_HASH_I60 `<PubKeyHash>` OP_EQUALVERIFY OP_CHECKSIG
+<signature> <PubK> OP_DUP OP_HASH_I60 <PubKeyHash> OP_EQUALVERIFY OP_CHECKSIG
 ```
 ### Stack Contents Step 1
 `<signature>` is pushed onto the stack:
@@ -70,8 +70,13 @@ The OP_CHECKSIG opcode is applied. The top two elements in the stack are popped 
 
 If the process finishes and the stack has the single element `TRUE`, the transaction is valid.
 
+Notes on Hashing
+----------------
+Note that hashing a string is __NOT__ the same as hashing a hexstring. In [utilities/hash160.py][2], the `hash160_hexstring()` method is used to hash the input on a byte-by-byte basis, with `binascii.unhexlify()` used to create a bytes object (binary data) from the hexadecimal string.
+
 References
 ----------
 * [bitcoin.org Developer Docs, Transactions][1]
 
 [1]: https://bitcoin.org/en/transactions-guide
+[2]: utilities/hash160.py
